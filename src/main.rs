@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 // MAIN
 
 fn main() {
@@ -6,7 +8,7 @@ fn main() {
 
 // TUPLE
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct Tuple {
     x: f32,
     y: f32,
@@ -33,6 +35,19 @@ impl Tuple {
 
     fn is_vector(self) -> bool {
         self.w == 0.0
+    }
+}
+
+impl Add for Tuple {
+    type Output = Self;
+
+    fn add(self, other: Tuple) -> Tuple {
+        Tuple {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+            w: self.w + other.w,
+        }
     }
 }
 
@@ -92,5 +107,17 @@ mod tests {
 
         let is_vector: bool = Tuple::is_vector(tuple);
         assert!(is_vector);
+    }
+
+    #[test]
+    fn test_add_two_tuples() {
+        let tuple1: Tuple = Tuple::new(3.0, -2.0, 5.0, 1.0);
+        let tuple2: Tuple = Tuple::new(-2.0, 3.0, 1.0, 0.0);
+        let result: Tuple = tuple1 + tuple2;
+
+        assert_eq!(result.x, 1.0);
+        assert_eq!(result.y, 1.0);
+        assert_eq!(result.z, 6.0);
+        assert_eq!(result.w, 1.0);
     }
 }
