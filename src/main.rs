@@ -19,6 +19,14 @@ impl Tuple {
         Tuple { x, y, z, w }
     }
 
+    fn point(x: f32, y: f32, z: f32) -> Self {
+        Tuple { x, y, z, w: 1.0 }
+    }
+
+    fn vector(x: f32, y: f32, z: f32) -> Self {
+        Tuple { x, y, z, w: 0.0 }
+    }
+
     fn is_point(self) -> bool {
         self.w == 1.0
     }
@@ -57,6 +65,30 @@ mod tests {
 
         let is_point: bool = Tuple::is_point(tuple);
         assert!(!is_point);
+
+        let is_vector: bool = Tuple::is_vector(tuple);
+        assert!(is_vector);
+    }
+
+    #[test]
+    fn test_point_creates_a_point() {
+        let tuple: Tuple = Tuple::point(4.0, -4.0, 3.0);
+        assert_eq!(tuple.x, 4.0);
+        assert_eq!(tuple.y, -4.0);
+        assert_eq!(tuple.z, 3.0);
+        assert_eq!(tuple.w, 1.0);
+
+        let is_point: bool = Tuple::is_point(tuple);
+        assert!(is_point);
+    }
+
+    #[test]
+    fn test_vector_creates_a_vector() {
+        let tuple: Tuple = Tuple::vector(4.0, -4.0, 3.0);
+        assert_eq!(tuple.x, 4.0);
+        assert_eq!(tuple.y, -4.0);
+        assert_eq!(tuple.z, 3.0);
+        assert_eq!(tuple.w, 0.00);
 
         let is_vector: bool = Tuple::is_vector(tuple);
         assert!(is_vector);
