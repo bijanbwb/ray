@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, Sub};
 
 // MAIN
 
@@ -47,6 +47,19 @@ impl Add for Tuple {
             y: self.y + other.y,
             z: self.z + other.z,
             w: self.w + other.w,
+        }
+    }
+}
+
+impl Sub for Tuple {
+    type Output = Self;
+
+    fn sub(self, other: Tuple) -> Tuple {
+        Tuple {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+            w: self.w - other.w,
         }
     }
 }
@@ -110,7 +123,7 @@ mod tests {
     }
 
     #[test]
-    fn test_add_two_tuples() {
+    fn test_add_tuples() {
         let tuple1: Tuple = Tuple::new(3.0, -2.0, 5.0, 1.0);
         let tuple2: Tuple = Tuple::new(-2.0, 3.0, 1.0, 0.0);
         let result: Tuple = tuple1 + tuple2;
@@ -118,6 +131,18 @@ mod tests {
         assert_eq!(result.x, 1.0);
         assert_eq!(result.y, 1.0);
         assert_eq!(result.z, 6.0);
+        assert_eq!(result.w, 1.0);
+    }
+
+    #[test]
+    fn test_subtract_vector_from_point() {
+        let point: Tuple = Tuple::point(3.0, 2.0, 1.0);
+        let vector: Tuple = Tuple::vector(5.0, 6.0, 7.0);
+        let result: Tuple = point - vector;
+
+        assert_eq!(result.x, -2.0);
+        assert_eq!(result.y, -4.0);
+        assert_eq!(result.z, -6.0);
         assert_eq!(result.w, 1.0);
     }
 }
