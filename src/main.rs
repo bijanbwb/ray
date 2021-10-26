@@ -36,6 +36,11 @@ impl Tuple {
     fn is_vector(self) -> bool {
         self.w == 0.0
     }
+
+    fn magnitude(self) -> f32 {
+        let float: f32 = (self.x * self.x) + (self.y * self.y) + (self.z * self.z);
+        float.sqrt()
+    }
 }
 
 impl Add for Tuple {
@@ -252,5 +257,23 @@ mod tests {
         assert_eq!(result.y, -1.0);
         assert_eq!(result.z, 1.5);
         assert_eq!(result.w, -2.0);
+    }
+
+    #[test]
+    fn test_vector_magnitude() {
+        let vector: Tuple = Tuple::vector(1.0, 0.0, 0.0);
+        let result: f32 = Tuple::magnitude(vector);
+
+        assert_eq!(result, 1.0);
+    }
+
+    #[test]
+    fn test_vector_magnitude_pythagoras() {
+        let vector: Tuple = Tuple::vector(1.0, 2.0, 3.0);
+
+        let expected: f32 = (14.0 as f32).sqrt();
+        let actual: f32 = Tuple::magnitude(vector);
+
+        assert_eq!(expected, actual);
     }
 }
