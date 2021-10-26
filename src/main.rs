@@ -54,6 +54,15 @@ impl Tuple {
     fn dot(a: Self, b: Self) -> f32 {
         a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w
     }
+
+    fn cross(a: Self, b: Self) -> Self {
+        Tuple {
+            x: a.y * b.z - a.z * b.y,
+            y: a.z * b.x - a.x * b.z,
+            z: a.x * b.y - a.y * b.x,
+            w: 0.0,
+        }
+    }
 }
 
 impl Add for Tuple {
@@ -330,5 +339,31 @@ mod tests {
         let result: f32 = Tuple::dot(vector1, vector2);
 
         assert_eq!(result, 20.0);
+    }
+
+    #[test]
+    fn test_cross_product() {
+        let vector1: Tuple = Tuple::vector(1.0, 2.0, 3.0);
+        let vector2: Tuple = Tuple::vector(2.0, 3.0, 4.0);
+        let result: Tuple = Tuple::cross(vector1, vector2);
+
+        assert_eq!(result.x, -1.0);
+        assert_eq!(result.y, 2.0);
+        assert_eq!(result.z, -1.0);
+        assert_eq!(result.w, 0.0);
+        assert!(Tuple::is_vector(result));
+    }
+
+    #[test]
+    fn test_cross_product_order() {
+        let vector1: Tuple = Tuple::vector(1.0, 2.0, 3.0);
+        let vector2: Tuple = Tuple::vector(2.0, 3.0, 4.0);
+        let result: Tuple = Tuple::cross(vector2, vector1);
+
+        assert_eq!(result.x, 1.0);
+        assert_eq!(result.y, -2.0);
+        assert_eq!(result.z, 1.0);
+        assert_eq!(result.w, 0.0);
+        assert!(Tuple::is_vector(result));
     }
 }
