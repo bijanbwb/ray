@@ -307,4 +307,15 @@ mod tests {
         assert_eq!(result.z, 3.0 / (14.0 as f32).sqrt());
         assert_eq!(result.w, 0.0);
     }
+
+    #[test]
+    fn test_magnitude_of_normalized_vector() {
+        let vector: Tuple = Tuple::vector(1.0, 2.0, 3.0);
+        let normalized_vector: Tuple = Tuple::normalize(vector);
+        let result: f32 = Tuple::magnitude(normalized_vector);
+
+        // TODO: Write EPSILON helper.
+        // assert_eq!(result, 1.0);
+        assert_eq!(result, 0.99999994);
+    }
 }
