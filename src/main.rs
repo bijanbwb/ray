@@ -6,6 +6,7 @@ fn main() {
 
 // TUPLE
 
+#[derive(Clone, Copy)]
 struct Tuple {
     x: f32,
     y: f32,
@@ -32,44 +33,32 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_tuple_constructor_works() {
-        let tuple = Tuple::new(1.0, 2.0, 3.0, 1.0);
-
-        assert_eq!(tuple.x, 1.0);
-        assert_eq!(tuple.y, 2.0);
-        assert_eq!(tuple.z, 3.0);
+    fn test_tuple_constructor_for_points() {
+        let tuple: Tuple = Tuple::new(4.3, -4.2, 3.1, 1.0);
+        assert_eq!(tuple.x, 4.3);
+        assert_eq!(tuple.y, -4.2);
+        assert_eq!(tuple.z, 3.1);
         assert_eq!(tuple.w, 1.0);
+
+        let is_point: bool = Tuple::is_point(tuple);
+        assert!(is_point);
+
+        let is_vector: bool = Tuple::is_vector(tuple);
+        assert!(!is_vector);
     }
 
     #[test]
-    fn test_is_point_is_true_when_w_equals_one() {
-        let tuple: Tuple = Tuple::new(1.0, 2.0, 3.0, 1.0);
-        let boolean: bool = Tuple::is_point(tuple);
+    fn test_tuple_constructor_for_vectors() {
+        let tuple: Tuple = Tuple::new(4.3, -4.2, 3.1, 0.0);
+        assert_eq!(tuple.x, 4.3);
+        assert_eq!(tuple.y, -4.2);
+        assert_eq!(tuple.z, 3.1);
+        assert_eq!(tuple.w, 0.0);
 
-        assert!(boolean);
-    }
+        let is_point: bool = Tuple::is_point(tuple);
+        assert!(!is_point);
 
-    #[test]
-    fn test_is_point_is_false_when_w_equals_zero() {
-        let tuple: Tuple = Tuple::new(1.0, 2.0, 3.0, 0.0);
-        let boolean: bool = Tuple::is_point(tuple);
-
-        assert!(!boolean);
-    }
-
-    #[test]
-    fn test_is_vector_is_true_when_w_equals_zero() {
-        let tuple: Tuple = Tuple::new(1.0, 2.0, 3.0, 0.0);
-        let boolean: bool = Tuple::is_vector(tuple);
-
-        assert!(boolean);
-    }
-
-    #[test]
-    fn test_is_vector_is_false_when_w_equals_one() {
-        let tuple: Tuple = Tuple::new(1.0, 2.0, 3.0, 1.0);
-        let boolean: bool = Tuple::is_vector(tuple);
-
-        assert!(!boolean);
+        let is_vector: bool = Tuple::is_vector(tuple);
+        assert!(is_vector);
     }
 }
