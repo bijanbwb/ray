@@ -287,13 +287,24 @@ mod tests {
     }
 
     #[test]
-    fn test_normalize_vector() {
+    fn test_normalize_simple_vector() {
         let vector: Tuple = Tuple::vector(4.0, 0.0, 0.0);
         let result: Tuple = Tuple::normalize(vector);
 
         assert_eq!(result.x, 1.0);
         assert_eq!(result.y, 0.0);
         assert_eq!(result.z, 0.0);
+        assert_eq!(result.w, 0.0);
+    }
+
+    #[test]
+    fn test_normalize_vector() {
+        let vector: Tuple = Tuple::vector(1.0, 2.0, 3.0);
+        let result: Tuple = Tuple::normalize(vector);
+
+        assert_eq!(result.x, 1.0 / (14.0 as f32).sqrt());
+        assert_eq!(result.y, 2.0 / (14.0 as f32).sqrt());
+        assert_eq!(result.z, 3.0 / (14.0 as f32).sqrt());
         assert_eq!(result.w, 0.0);
     }
 }
