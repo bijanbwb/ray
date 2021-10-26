@@ -50,6 +50,10 @@ impl Tuple {
             w: self.w / Tuple::magnitude(self),
         }
     }
+
+    fn dot(a: Self, b: Self) -> f32 {
+        a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w
+    }
 }
 
 impl Add for Tuple {
@@ -317,5 +321,14 @@ mod tests {
         // TODO: Write EPSILON helper.
         // assert_eq!(result, 1.0);
         assert_eq!(result, 0.99999994);
+    }
+
+    #[test]
+    fn test_dot_product() {
+        let vector1: Tuple = Tuple::vector(1.0, 2.0, 3.0);
+        let vector2: Tuple = Tuple::vector(2.0, 3.0, 4.0);
+        let result: f32 = Tuple::dot(vector1, vector2);
+
+        assert_eq!(result, 20.0);
     }
 }
