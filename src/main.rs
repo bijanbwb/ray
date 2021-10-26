@@ -1,4 +1,4 @@
-use std::ops::{Add, Mul, Neg, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // MAIN
 
@@ -86,6 +86,19 @@ impl Mul<f32> for Tuple {
             y: self.y * scalar,
             z: self.z * scalar,
             w: self.w * scalar,
+        }
+    }
+}
+
+impl Div<f32> for Tuple {
+    type Output = Self;
+
+    fn div(self, scalar: f32) -> Tuple {
+        Tuple {
+            x: self.x / scalar,
+            y: self.y / scalar,
+            z: self.z / scalar,
+            w: self.w / scalar,
         }
     }
 }
@@ -222,12 +235,22 @@ mod tests {
     #[test]
     fn test_multiply_tuple_by_scalar() {
         let tuple: Tuple = Tuple::new(1.0, -2.0, 3.0, -4.0);
-        let scalar: f32 = 3.5;
-        let result: Tuple = tuple * scalar;
+        let result: Tuple = tuple * 3.5;
 
         assert_eq!(result.x, 3.5);
         assert_eq!(result.y, -7.0);
         assert_eq!(result.z, 10.5);
         assert_eq!(result.w, -14.0);
+    }
+
+    #[test]
+    fn test_divide_tuple_by_scalar() {
+        let tuple: Tuple = Tuple::new(1.0, -2.0, 3.0, -4.0);
+        let result: Tuple = tuple / 2.0;
+
+        assert_eq!(result.x, 0.5);
+        assert_eq!(result.y, -1.0);
+        assert_eq!(result.z, 1.5);
+        assert_eq!(result.w, -2.0);
     }
 }
