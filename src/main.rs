@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Neg, Sub};
 
 // MAIN
 
@@ -60,6 +60,19 @@ impl Sub for Tuple {
             y: self.y - other.y,
             z: self.z - other.z,
             w: self.w - other.w,
+        }
+    }
+}
+
+impl Neg for Tuple {
+    type Output = Self;
+
+    fn neg(self) -> Tuple {
+        Tuple {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+            w: -self.w,
         }
     }
 }
@@ -168,5 +181,28 @@ mod tests {
         assert_eq!(result.y, -4.0);
         assert_eq!(result.z, -6.0);
         assert_eq!(result.w, 0.0);
+    }
+
+    #[test]
+    fn test_subtract_vector_from_zero_vector() {
+        let vector1: Tuple = Tuple::vector(0.0, 0.0, 0.0);
+        let vector2: Tuple = Tuple::vector(1.0, -2.0, 3.0);
+        let result: Tuple = vector1 - vector2;
+
+        assert_eq!(result.x, -1.0);
+        assert_eq!(result.y, 2.0);
+        assert_eq!(result.z, -3.0);
+        assert_eq!(result.w, 0.0);
+    }
+
+    #[test]
+    fn test_negate_tuple() {
+        let tuple: Tuple = Tuple::new(1.0, -2.0, 3.0, -4.0);
+        let result: Tuple = -tuple;
+
+        assert_eq!(result.x, -1.0);
+        assert_eq!(result.y, 2.0);
+        assert_eq!(result.z, -3.0);
+        assert_eq!(result.w, 4.0);
     }
 }
