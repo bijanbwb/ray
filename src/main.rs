@@ -41,6 +41,15 @@ impl Tuple {
         let float: f32 = (self.x * self.x) + (self.y * self.y) + (self.z * self.z);
         float.sqrt()
     }
+
+    fn normalize(self) -> Self {
+        Tuple {
+            x: self.x / Tuple::magnitude(self),
+            y: self.y / Tuple::magnitude(self),
+            z: self.z / Tuple::magnitude(self),
+            w: self.w / Tuple::magnitude(self),
+        }
+    }
 }
 
 impl Add for Tuple {
@@ -275,5 +284,16 @@ mod tests {
         let actual: f32 = Tuple::magnitude(vector);
 
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_normalize_vector() {
+        let vector: Tuple = Tuple::vector(4.0, 0.0, 0.0);
+        let result: Tuple = Tuple::normalize(vector);
+
+        assert_eq!(result.x, 1.0);
+        assert_eq!(result.y, 0.0);
+        assert_eq!(result.z, 0.0);
+        assert_eq!(result.w, 0.0);
     }
 }
