@@ -135,6 +135,18 @@ mod tests {
     }
 
     #[test]
+    fn test_subtract_point_from_point() {
+        let point1: Tuple = Tuple::point(3.0, 2.0, 1.0);
+        let point2: Tuple = Tuple::point(5.0, 6.0, 7.0);
+        let result: Tuple = point1 - point2;
+
+        assert_eq!(result.x, -2.0);
+        assert_eq!(result.y, -4.0);
+        assert_eq!(result.z, -6.0);
+        assert_eq!(result.w, 0.0);
+    }
+
+    #[test]
     fn test_subtract_vector_from_point() {
         let point: Tuple = Tuple::point(3.0, 2.0, 1.0);
         let vector: Tuple = Tuple::vector(5.0, 6.0, 7.0);
@@ -144,5 +156,17 @@ mod tests {
         assert_eq!(result.y, -4.0);
         assert_eq!(result.z, -6.0);
         assert_eq!(result.w, 1.0);
+    }
+
+    #[test]
+    fn test_subtract_vector_from_vector() {
+        let vector1: Tuple = Tuple::vector(3.0, 2.0, 1.0);
+        let vector2: Tuple = Tuple::vector(5.0, 6.0, 7.0);
+        let result: Tuple = vector1 - vector2;
+
+        assert_eq!(result.x, -2.0);
+        assert_eq!(result.y, -4.0);
+        assert_eq!(result.z, -6.0);
+        assert_eq!(result.w, 0.0);
     }
 }
