@@ -130,6 +130,21 @@ impl Div<f32> for Tuple {
     }
 }
 
+// COLOR
+
+#[derive(Clone, Copy, Debug)]
+struct Color {
+    red: f32,
+    green: f32,
+    blue: f32,
+}
+
+impl Color {
+    fn new(red: f32, green: f32, blue: f32) -> Self {
+        Color { red, green, blue }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -365,5 +380,14 @@ mod tests {
         assert_eq!(result.z, 1.0);
         assert_eq!(result.w, 0.0);
         assert!(Tuple::is_vector(result));
+    }
+
+    #[test]
+    fn test_color_constructor() {
+        let color: Color = Color::new(-0.5, 0.4, 1.7);
+
+        assert_eq!(color.red, -0.5);
+        assert_eq!(color.green, 0.4);
+        assert_eq!(color.blue, 1.7);
     }
 }
