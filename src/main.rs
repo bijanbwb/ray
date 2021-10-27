@@ -198,17 +198,34 @@ impl Mul<Color> for Color {
 struct Canvas {
     width: i32,
     height: i32,
-    pixels: Vec<Color>,
+    pixels: Vec<Pixel>,
+}
+
+struct Pixel {
+    x: i32,
+    y: i32,
+    color: Color,
 }
 
 impl Canvas {
     fn new(width: i32, height: i32) -> Self {
         let color: Color = Color::new(0.0, 0.0, 0.0);
+        let pixels: Vec<Pixel> = vec![];
 
         Canvas {
             width,
             height,
-            pixels: vec![color],
+            pixels: pixels,
+        }
+    }
+
+    fn pixel_at(canvas: Self, x: i32, y: i32) -> Pixel {
+        let color: Color = Color::new(0.0, 0.0, 0.0);
+
+        Pixel {
+            x: 1,
+            y: 2,
+            color: color,
         }
     }
 }
@@ -510,10 +527,20 @@ mod tests {
         assert_eq!(canvas.height, 20);
 
         for pixel in canvas.pixels {
-            assert_eq!(pixel.red, 0.0);
-            assert_eq!(pixel.green, 0.0);
-            assert_eq!(pixel.blue, 0.0);
+            assert_eq!(pixel.color.red, 0.0);
+            assert_eq!(pixel.color.green, 0.0);
+            assert_eq!(pixel.color.blue, 0.0);
         }
+    }
+
+    #[test]
+    fn test_get_pixel_from_canvas() {
+        let canvas: Canvas = Canvas::new(10, 20);
+        let pixel: Pixel = Canvas::pixel_at(canvas, 2, 3);
+
+        assert_eq!(pixel.color.red, 0.0);
+        assert_eq!(pixel.color.green, 0.0);
+        assert_eq!(pixel.color.blue, 0.0);
     }
 
     // TEST HELPERS
