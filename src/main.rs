@@ -193,6 +193,21 @@ impl Mul<Color> for Color {
     }
 }
 
+// CANVAS
+
+struct Canvas {
+    width: i32,
+    height: i32,
+}
+
+impl Canvas {
+    fn new(width: i32, height: i32) -> Self {
+        Canvas { width, height }
+    }
+}
+
+// TESTS
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -478,6 +493,14 @@ mod tests {
         assert!(float_eq(result.red, 0.9));
         assert!(float_eq(result.green, 0.2));
         assert!(float_eq(result.blue, 0.04));
+    }
+
+    #[test]
+    fn test_canvas_constructor() {
+        let canvas: Canvas = Canvas::new(10, 20);
+
+        assert_eq!(canvas.width, 10);
+        assert_eq!(canvas.height, 20);
     }
 
     // TEST HELPERS
