@@ -145,6 +145,42 @@ impl Color {
     }
 }
 
+impl Add for Color {
+    type Output = Self;
+
+    fn add(self, other: Color) -> Self {
+        Color {
+            red: self.red + other.red,
+            green: self.green + other.green,
+            blue: self.blue + other.blue,
+        }
+    }
+}
+
+impl Sub for Color {
+    type Output = Self;
+
+    fn sub(self, other: Color) -> Self {
+        Color {
+            red: self.red - other.red,
+            green: self.green - other.green,
+            blue: self.blue - other.blue,
+        }
+    }
+}
+
+impl Mul<f32> for Color {
+    type Output = Self;
+
+    fn mul(self, scalar: f32) -> Self {
+        Color {
+            red: self.red * scalar,
+            green: self.green * scalar,
+            blue: self.blue * scalar,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -342,9 +378,7 @@ mod tests {
         let normalized_vector: Tuple = Tuple::normalize(vector);
         let result: f32 = Tuple::magnitude(normalized_vector);
 
-        // TODO: Write EPSILON helper.
-        // assert_eq!(result, 1.0);
-        assert_eq!(result, 0.99999994);
+        assert!(float_eq(result, 1.0));
     }
 
     #[test]
@@ -389,5 +423,45 @@ mod tests {
         assert_eq!(color.red, -0.5);
         assert_eq!(color.green, 0.4);
         assert_eq!(color.blue, 1.7);
+    }
+
+    #[test]
+    fn test_add_colors() {
+        let color1: Color = Color::new(0.9, 0.6, 0.75);
+        let color2: Color = Color::new(0.7, 0.1, 0.25);
+        let result: Color = color1 + color2;
+
+        assert!(float_eq(result.red, 1.6));
+        assert!(float_eq(result.green, 0.7));
+        assert!(float_eq(result.blue, 1.0));
+    }
+
+    #[test]
+    fn test_sub_colors() {
+        let color1: Color = Color::new(0.9, 0.6, 0.75);
+        let color2: Color = Color::new(0.7, 0.1, 0.25);
+        let result: Color = color1 - color2;
+
+        assert!(float_eq(result.red, 0.2));
+        assert!(float_eq(result.green, 0.5));
+        assert!(float_eq(result.blue, 0.5));
+    }
+
+    #[test]
+    fn test_multiply_color_by_scalar() {
+        let color: Color = Color::new(0.9, 0.6, 0.75);
+        let result: Color = color * 2.0;
+
+        assert!(float_eq(result.red, 1.8));
+        assert!(float_eq(result.green, 1.2));
+        assert!(float_eq(result.blue, 1.5));
+    }
+
+    // TEST HELPERS
+
+    const EPSILON: f32 = 0.00001;
+
+    fn float_eq(a: f32, b: f32) -> bool {
+        (a - b).abs() < EPSILON
     }
 }
