@@ -198,11 +198,18 @@ impl Mul<Color> for Color {
 struct Canvas {
     width: i32,
     height: i32,
+    pixels: Vec<Color>,
 }
 
 impl Canvas {
     fn new(width: i32, height: i32) -> Self {
-        Canvas { width, height }
+        let color: Color = Color::new(0.0, 0.0, 0.0);
+
+        Canvas {
+            width,
+            height,
+            pixels: vec![color],
+        }
     }
 }
 
@@ -501,6 +508,12 @@ mod tests {
 
         assert_eq!(canvas.width, 10);
         assert_eq!(canvas.height, 20);
+
+        for pixel in canvas.pixels {
+            assert_eq!(pixel.red, 0.0);
+            assert_eq!(pixel.green, 0.0);
+            assert_eq!(pixel.blue, 0.0);
+        }
     }
 
     // TEST HELPERS
