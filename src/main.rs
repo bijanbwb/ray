@@ -234,6 +234,11 @@ impl Canvas {
             pixels: pixels,
         }
     }
+
+    fn canvas_to_ppm(canvas: Self) -> String {
+        // TODO: Convert Color to 255
+        format!("P3\n{} {}\n255", canvas.width, canvas.height)
+    }
 }
 
 // TESTS
@@ -559,6 +564,15 @@ mod tests {
         assert_eq!(pixel.red, 1.0);
         assert_eq!(pixel.green, 0.0);
         assert_eq!(pixel.blue, 0.0);
+    }
+
+    #[test]
+    fn test_canvas_to_ppm() {
+        let canvas: Canvas = Canvas::new(5, 3);
+        let ppm: String = Canvas::canvas_to_ppm(canvas);
+        let expected_output: String = "P3\n5 3\n255".to_string();
+
+        assert_eq!(ppm, expected_output);
     }
 
     // TEST HELPERS
