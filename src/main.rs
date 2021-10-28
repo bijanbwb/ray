@@ -228,6 +228,17 @@ impl Canvas {
             color: color,
         }
     }
+
+    fn write_pixel(canvas: Self, x: i32, y: i32, color: Color) -> Canvas {
+        // TODO: insert color at x and y position in canvas.pixels...
+        let pixels: Vec<Pixel> = canvas.pixels;
+
+        Canvas {
+            width: canvas.width,
+            height: canvas.height,
+            pixels: pixels,
+        }
+    }
 }
 
 // TESTS
@@ -538,6 +549,21 @@ mod tests {
         let canvas: Canvas = Canvas::new(10, 20);
         let pixel: Pixel = Canvas::pixel_at(canvas, 2, 3);
 
+        assert_eq!(pixel.color.red, 0.0);
+        assert_eq!(pixel.color.green, 0.0);
+        assert_eq!(pixel.color.blue, 0.0);
+    }
+
+    #[test]
+    fn test_write_pixel_to_canvas() {
+        let canvas: Canvas = Canvas::new(10, 20);
+        let color: Color = Color::new(1.0, 0.0, 0.0);
+        let updated_canvas: Canvas = Canvas::write_pixel(canvas, 2, 3, color);
+        let pixel: Pixel = Canvas::pixel_at(updated_canvas, 2, 3);
+
+        // assert_eq!(pixel.color.red, 1.0);
+        // assert_eq!(pixel.color.green, 0.0);
+        // assert_eq!(pixel.color.blue, 0.0);
         assert_eq!(pixel.color.red, 0.0);
         assert_eq!(pixel.color.green, 0.0);
         assert_eq!(pixel.color.blue, 0.0);
