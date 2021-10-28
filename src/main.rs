@@ -196,21 +196,19 @@ impl Mul<Color> for Color {
 // CANVAS
 
 struct Canvas {
-    width: i32,
-    height: i32,
-    pixels: Vec<Pixel>,
-}
-
-struct Pixel {
-    x: i32,
-    y: i32,
-    color: Color,
+    width: usize,
+    height: usize,
+    pixels: Vec<Vec<Color>>,
 }
 
 impl Canvas {
-    fn new(width: i32, height: i32) -> Self {
+    fn new(width: usize, height: usize) -> Self {
+        // TODO: Replace constants with width and height args
+        const W: usize = 10;
+        const H: usize = 20;
+
         let color: Color = Color::new(0.0, 0.0, 0.0);
-        let pixels: Vec<Pixel> = vec![];
+        let pixels: Vec<Vec<Color>> = vec![vec![color; W]; H];
 
         Canvas {
             width,
@@ -219,19 +217,16 @@ impl Canvas {
         }
     }
 
-    fn pixel_at(canvas: Self, x: i32, y: i32) -> Pixel {
-        let color: Color = Color::new(0.0, 0.0, 0.0);
+    fn pixel_at(canvas: Self, x: usize, y: usize) -> Color {
+        let pixels: Vec<Vec<Color>> = canvas.pixels;
 
-        Pixel {
-            x: 1,
-            y: 2,
-            color: color,
-        }
+        pixels[x][y]
     }
 
-    fn write_pixel(canvas: Self, x: i32, y: i32, color: Color) -> Canvas {
-        // TODO: insert color at x and y position in canvas.pixels...
-        let pixels: Vec<Pixel> = canvas.pixels;
+    fn write_pixel(canvas: Self, x: usize, y: usize, color: Color) -> Canvas {
+        let mut pixels: Vec<Vec<Color>> = canvas.pixels;
+
+        pixels[x][y] = color;
 
         Canvas {
             width: canvas.width,
@@ -537,21 +532,21 @@ mod tests {
         assert_eq!(canvas.width, 10);
         assert_eq!(canvas.height, 20);
 
-        for pixel in canvas.pixels {
-            assert_eq!(pixel.color.red, 0.0);
-            assert_eq!(pixel.color.green, 0.0);
-            assert_eq!(pixel.color.blue, 0.0);
+        for pixel in canvas.pixels.iter().flatten() {
+            assert_eq!(pixel.red, 0.0);
+            assert_eq!(pixel.green, 0.0);
+            assert_eq!(pixel.blue, 0.0);
         }
     }
 
     #[test]
     fn test_get_pixel_from_canvas() {
         let canvas: Canvas = Canvas::new(10, 20);
-        let pixel: Pixel = Canvas::pixel_at(canvas, 2, 3);
+        let pixel: Color = Canvas::pixel_at(canvas, 2, 3);
 
-        assert_eq!(pixel.color.red, 0.0);
-        assert_eq!(pixel.color.green, 0.0);
-        assert_eq!(pixel.color.blue, 0.0);
+        assert_eq!(pixel.red, 0.0);
+        assert_eq!(pixel.green, 0.0);
+        assert_eq!(pixel.blue, 0.0);
     }
 
     #[test]
@@ -559,14 +554,11 @@ mod tests {
         let canvas: Canvas = Canvas::new(10, 20);
         let color: Color = Color::new(1.0, 0.0, 0.0);
         let updated_canvas: Canvas = Canvas::write_pixel(canvas, 2, 3, color);
-        let pixel: Pixel = Canvas::pixel_at(updated_canvas, 2, 3);
+        let pixel: Color = Canvas::pixel_at(updated_canvas, 2, 3);
 
-        // assert_eq!(pixel.color.red, 1.0);
-        // assert_eq!(pixel.color.green, 0.0);
-        // assert_eq!(pixel.color.blue, 0.0);
-        assert_eq!(pixel.color.red, 0.0);
-        assert_eq!(pixel.color.green, 0.0);
-        assert_eq!(pixel.color.blue, 0.0);
+        assert_eq!(pixel.red, 1.0);
+        assert_eq!(pixel.green, 0.0);
+        assert_eq!(pixel.blue, 0.0);
     }
 
     // TEST HELPERS
