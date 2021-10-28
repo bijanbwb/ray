@@ -1,4 +1,6 @@
+use std::fs;
 use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::path::Path;
 
 // MAIN
 
@@ -238,6 +240,10 @@ impl Canvas {
     fn canvas_to_ppm(canvas: Self) -> String {
         // TODO: Convert Color to 255
         format!("P3\n{} {}\n255\n", canvas.width, canvas.height)
+    }
+
+    fn write_ppm_to_file(ppm: String) {
+        fs::write("./canvas.ppm", ppm).expect("Unable to write file");
     }
 }
 
@@ -573,6 +579,19 @@ mod tests {
         let expected_output: String = "P3\n5 3\n255\n".to_string();
 
         assert_eq!(ppm, expected_output);
+    }
+
+    #[test]
+    fn test_write_ppm_to_file() {
+        let canvas: Canvas = Canvas::new(5, 3);
+        let ppm: String = Canvas::canvas_to_ppm(canvas);
+
+        Canvas::write_ppm_to_file(ppm);
+
+        let file_exists: bool = Path::new("./canvas.ppm").exists();
+        assert!(file_exists);
+
+        // TODO: clean up file
     }
 
     // TEST HELPERS
