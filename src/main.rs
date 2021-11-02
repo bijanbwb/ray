@@ -243,7 +243,7 @@ impl Canvas {
     }
 
     fn write_ppm_to_file(ppm: String) {
-        fs::write("./canvas.ppm", ppm).expect("Unable to write file");
+        fs::write("./assets/canvas.ppm", ppm).expect("Unable to write file");
     }
 }
 
@@ -588,10 +588,11 @@ mod tests {
 
         Canvas::write_ppm_to_file(ppm);
 
-        let file_exists: bool = Path::new("./canvas.ppm").exists();
+        let file_exists: bool = Path::new("./assets/canvas.ppm").exists();
         assert!(file_exists);
 
-        // TODO: clean up file
+        // Clean up
+        fs::remove_file("./canvas.ppm").expect("Failed to remove ppm file.");
     }
 
     // TEST HELPERS
