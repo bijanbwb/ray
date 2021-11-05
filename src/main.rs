@@ -181,9 +181,22 @@ impl Color {
         Color { red, green, blue }
     }
 
-    fn to_int(_color: Color) -> i32 {
-        // TODO: Turn rgb into integer between 0 and 255.
-        0
+    fn to_integers_tuple(color: Color) -> (i32, i32, i32) {
+        (
+            Self::clamp_and_round(color.red),
+            Self::clamp_and_round(color.green),
+            Self::clamp_and_round(color.blue),
+        )
+    }
+
+    fn clamp_and_round(rgb_value: f32) -> i32 {
+        (rgb_value.clamp(0.0, 1.0) * 255.0).round() as i32
+    }
+
+    fn to_string(color: Color) -> String {
+        let (red, green, blue): (i32, i32, i32) = Self::to_integers_tuple(color);
+
+        format!("{} {} {}", red, green, blue)
     }
 }
 
@@ -595,11 +608,59 @@ mod tests {
     }
 
     #[test]
-    fn test_color_to_int() {
+    fn test_color_to_integers_tuple_min() {
         let color: Color = Color::new(0.0, 0.0, 0.0);
-        let color_int: i32 = Color::to_int(color);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
 
-        assert_eq!(color_int, 0);
+        assert_eq!(red, 0);
+        assert_eq!(green, 0);
+        assert_eq!(blue, 0);
+    }
+
+    #[test]
+    fn test_color_to_integers_tuple_mid() {
+        let color: Color = Color::new(0.5, 0.5, 0.5);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+
+        assert_eq!(red, 128);
+        assert_eq!(green, 128);
+        assert_eq!(blue, 128);
+    }
+
+    #[test]
+    fn test_color_to_integers_tuple_max() {
+        let color: Color = Color::new(1.0, 1.0, 1.0);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+
+        assert_eq!(red, 255);
+        assert_eq!(green, 255);
+        assert_eq!(blue, 255);
+    }
+
+    #[test]
+    fn test_color_to_integers_tuple_edge() {
+        let color: Color = Color::new(-999.0, 999.0, 999.0);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+
+        assert_eq!(red, 0);
+        assert_eq!(green, 255);
+        assert_eq!(blue, 255);
+    }
+
+    #[test]
+    fn test_color_to_string_min() {
+        let color: Color = Color::new(0.0, 0.0, 0.0);
+        let string: String = Color::to_string(color);
+
+        assert_eq!(string, "0 0 0");
+    }
+
+    #[test]
+    fn test_color_to_string_max() {
+        let color: Color = Color::new(1.0, 1.0, 1.0);
+        let string: String = Color::to_string(color);
+
+        assert_eq!(string, "255 255 255");
     }
 
     #[test]
@@ -686,6 +747,27 @@ mod tests {
         let canvas: Canvas = Canvas::new(5, 3);
         let ppm: String = Canvas::canvas_to_ppm(canvas);
         let expected_output: String = "P3\n5 3\n255\n".to_string();
+
+        assert_eq!(ppm, expected_output);
+    }
+
+    #[test]
+    fn test_canvas_to_ppm_with_pixels() {
+        let mut canvas: Canvas = Canvas::new(5, 3);
+
+        let color1: Color = Color::new(1.5, 0.0, 0.0);
+        let color2: Color = Color::new(0.0, 0.5, 0.0);
+        let color3: Color = Color::new(-0.5, 0.0, 1.0);
+
+        canvas = Canvas::write_pixel(canvas, 0, 0, color1);
+        canvas = Canvas::write_pixel(canvas, 2, 1, color2);
+        canvas = Canvas::write_pixel(canvas, 4, 2, color3);
+
+        let ppm: String = Canvas::canvas_to_ppm(canvas);
+
+        let expected_output: String = "P3\n5 3\n255\n".to_string();
+
+        // TODO: Test pixels
 
         assert_eq!(ppm, expected_output);
     }
