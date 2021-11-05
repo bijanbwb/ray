@@ -181,7 +181,7 @@ impl Color {
         Color { red, green, blue }
     }
 
-    fn to_integers_tuple(color: Color) -> (i32, i32, i32) {
+    fn to_integers_tuple(&color: &Color) -> (i32, i32, i32) {
         (
             Self::clamp_and_round(color.red),
             Self::clamp_and_round(color.green),
@@ -193,8 +193,8 @@ impl Color {
         (rgb_value.clamp(0.0, 1.0) * 255.0).round() as i32
     }
 
-    fn to_string(color: Color) -> String {
-        let (red, green, blue): (i32, i32, i32) = Self::to_integers_tuple(color);
+    fn to_string(&color: &Color) -> String {
+        let (red, green, blue): (i32, i32, i32) = Self::to_integers_tuple(&color);
 
         format!("{} {} {}", red, green, blue)
     }
@@ -287,24 +287,26 @@ impl Canvas {
     }
 
     fn canvas_to_ppm(canvas: Self) -> String {
-        // TODO: Convert canvas.pixels into integers.
-        // TODO: Add integers to string.
+        let ppm_magic_number: String = "P3".to_string();
         let maximum_color_value: i32 = 255;
 
-        let ppm_header: String = format!(
-            "P3\n{} {}\n{}\n",
-            canvas.width, canvas.height, maximum_color_value
-        );
+        // TODO: Convert canvas.pixels to strings and add them below the ppm header.
+        let pixels: String = canvas
+            .pixels
+            .iter()
+            .map(|_row: &Vec<Color>| {
+                "0 0 0\n"
+                // row.iter()
+                //     .map(|color: &Color| Color::to_string(&color))
+                //     .collect()
+            })
+            .collect();
+        // let pixels = "0 0 0".to_string();
 
-        // TODO: Convert pixels into a string.
-        let pixels: String = "".to_string();
-        // let pixels: String = canvas
-        //     .pixels
-        //     .iter()
-        //     .map(|row| row.iter().map(|color| Color::to_string(color)).collect())
-        //     .collect();
-
-        [ppm_header, pixels].join("")
+        format!(
+            "{}\n{} {}\n{}\n{}",
+            ppm_magic_number, canvas.width, canvas.height, maximum_color_value, pixels
+        )
     }
 
     fn write_ppm_to_file(ppm: String) {
@@ -616,7 +618,7 @@ mod tests {
     #[test]
     fn test_color_to_integers_tuple_min() {
         let color: Color = Color::new(0.0, 0.0, 0.0);
-        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(&color);
 
         assert_eq!(red, 0);
         assert_eq!(green, 0);
@@ -626,7 +628,7 @@ mod tests {
     #[test]
     fn test_color_to_integers_tuple_mid() {
         let color: Color = Color::new(0.5, 0.5, 0.5);
-        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(&color);
 
         assert_eq!(red, 128);
         assert_eq!(green, 128);
@@ -636,7 +638,7 @@ mod tests {
     #[test]
     fn test_color_to_integers_tuple_max() {
         let color: Color = Color::new(1.0, 1.0, 1.0);
-        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(&color);
 
         assert_eq!(red, 255);
         assert_eq!(green, 255);
@@ -646,7 +648,7 @@ mod tests {
     #[test]
     fn test_color_to_integers_tuple_edge() {
         let color: Color = Color::new(-999.0, 999.0, 999.0);
-        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(color);
+        let (red, green, blue): (i32, i32, i32) = Color::to_integers_tuple(&color);
 
         assert_eq!(red, 0);
         assert_eq!(green, 255);
@@ -656,7 +658,7 @@ mod tests {
     #[test]
     fn test_color_to_string_min() {
         let color: Color = Color::new(0.0, 0.0, 0.0);
-        let string: String = Color::to_string(color);
+        let string: String = Color::to_string(&color);
 
         assert_eq!(string, "0 0 0");
     }
@@ -664,7 +666,7 @@ mod tests {
     #[test]
     fn test_color_to_string_max() {
         let color: Color = Color::new(1.0, 1.0, 1.0);
-        let string: String = Color::to_string(color);
+        let string: String = Color::to_string(&color);
 
         assert_eq!(string, "255 255 255");
     }
@@ -750,38 +752,36 @@ mod tests {
 
     #[test]
     fn test_canvas_to_ppm() {
-        let canvas: Canvas = Canvas::new(5, 3);
+        let mut canvas: Canvas = Canvas::new(5, 3);
+
+        let color1: Color = Color::new(1.0, 0.0, 0.0);
+        let color2: Color = Color::new(0.0, 0.5, 0.0);
+
+        canvas = Canvas::write_pixel(canvas, 0, 0, color1);
+        canvas = Canvas::write_pixel(canvas, 2, 1, color2);
+
         let ppm: String = Canvas::canvas_to_ppm(canvas);
-        let expected_output: String = "P3\n5 3\n255\n".to_string();
+
+        let expected_output: String = "P3
+5 3
+255
+0 0 0
+0 0 0
+0 0 0
+"
+        .to_string();
+
+        // let expected_output: String = "P3
+        // 5 3
+        // 255
+        // 255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        // 0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
+        // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        // "
+        //         .to_string();
 
         assert_eq!(ppm, expected_output);
     }
-
-    //     #[test]
-    //     fn test_canvas_to_ppm_with_pixels() {
-    //         let mut canvas: Canvas = Canvas::new(5, 3);
-
-    //         let color1: Color = Color::new(1.5, 0.0, 0.0);
-    //         let color2: Color = Color::new(0.0, 0.5, 0.0);
-    //         let color3: Color = Color::new(-0.5, 0.0, 1.0);
-
-    //         canvas = Canvas::write_pixel(canvas, 0, 0, color1);
-    //         canvas = Canvas::write_pixel(canvas, 2, 1, color2);
-    //         canvas = Canvas::write_pixel(canvas, 4, 2, color3);
-
-    //         let ppm: String = Canvas::canvas_to_ppm(canvas);
-
-    //         let expected_output: String = "P3
-    // 5 3
-    // 255
-    // 255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    // 0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
-    // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 255
-    // "
-    //         .to_string();
-
-    //         assert_eq!(ppm, expected_output);
-    //     }
 
     #[test]
     fn test_write_ppm_to_file() {
