@@ -180,6 +180,11 @@ impl Color {
     fn new(red: f32, green: f32, blue: f32) -> Self {
         Color { red, green, blue }
     }
+
+    fn to_int(_color: Color) -> i32 {
+        // TODO: Turn rgb into integer between 0 and 255.
+        0
+    }
 }
 
 impl Add for Color {
@@ -273,8 +278,14 @@ impl Canvas {
     }
 
     fn canvas_to_ppm(canvas: Self) -> String {
-        // TODO: Convert Color to 255
-        format!("P3\n{} {}\n255\n", canvas.width, canvas.height)
+        // TODO: Convert canvas.pixels into integers.
+        // TODO: Add integers to string.
+        let maximum_color_value: i32 = 255;
+
+        format!(
+            "P3\n{} {}\n{}\n",
+            canvas.width, canvas.height, maximum_color_value
+        )
     }
 
     fn write_ppm_to_file(ppm: String) {
@@ -584,6 +595,14 @@ mod tests {
     }
 
     #[test]
+    fn test_color_to_int() {
+        let color: Color = Color::new(0.0, 0.0, 0.0);
+        let color_int: i32 = Color::to_int(color);
+
+        assert_eq!(color_int, 0);
+    }
+
+    #[test]
     fn test_add_colors() {
         let color1: Color = Color::new(0.9, 0.6, 0.75);
         let color2: Color = Color::new(0.7, 0.1, 0.25);
@@ -673,7 +692,7 @@ mod tests {
 
     #[test]
     fn test_write_ppm_to_file() {
-        let canvas: Canvas = Canvas::new(5, 3);
+        let canvas: Canvas = Canvas::new(256, 240);
         let ppm: String = Canvas::canvas_to_ppm(canvas);
 
         Canvas::write_ppm_to_file(ppm);
