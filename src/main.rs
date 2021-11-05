@@ -10,7 +10,7 @@ fn main() {
 
 // TUPLE
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 struct Tuple {
     x: f32,
     y: f32,
@@ -129,6 +129,20 @@ impl Div<f32> for Tuple {
             z: self.z / scalar,
             w: self.w / scalar,
         }
+    }
+}
+
+// PROJECTILE
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Projectile {
+    position: Tuple,
+    vector: Tuple,
+}
+
+impl Projectile {
+    fn new(position: Tuple, vector: Tuple) -> Self {
+        Projectile { position, vector }
     }
 }
 
@@ -485,6 +499,16 @@ mod tests {
     }
 
     #[test]
+    fn test_projectile_constructor() {
+        let position: Tuple = Tuple::point(1.0, 2.0, 3.0);
+        let vector: Tuple = Tuple::vector(2.0, 3.0, 4.0);
+        let result: Projectile = Projectile::new(position, vector);
+
+        assert_eq!(result.position, position);
+        assert_eq!(result.vector, vector);
+    }
+
+    #[test]
     fn test_color_constructor() {
         let color: Color = Color::new(-0.5, 0.4, 1.7);
 
@@ -592,7 +616,7 @@ mod tests {
         assert!(file_exists);
 
         // Clean up
-        fs::remove_file("./canvas.ppm").expect("Failed to remove ppm file.");
+        fs::remove_file("./assets/canvas.ppm").expect("Failed to remove ppm file.");
     }
 
     // TEST HELPERS
