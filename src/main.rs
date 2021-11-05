@@ -289,19 +289,15 @@ impl Canvas {
     fn canvas_to_ppm(canvas: Self) -> String {
         let ppm_magic_number: String = "P3".to_string();
         let maximum_color_value: i32 = 255;
+        let mut pixels: String = "".to_string();
 
-        // TODO: Convert canvas.pixels to strings and add them below the ppm header.
-        let pixels: String = canvas
-            .pixels
-            .iter()
-            .map(|_row: &Vec<Color>| {
-                "0 0 0\n"
-                // row.iter()
-                //     .map(|color: &Color| Color::to_string(&color))
-                //     .collect()
-            })
-            .collect();
-        // let pixels = "0 0 0".to_string();
+        for row in canvas.pixels.iter() {
+            for color in row {
+                pixels.push_str(Color::to_string(&color).as_str());
+                pixels.push_str(" ");
+            }
+            pixels.push_str("\n");
+        }
 
         format!(
             "{}\n{} {}\n{}\n{}",
@@ -762,15 +758,6 @@ mod tests {
 
         let ppm: String = Canvas::canvas_to_ppm(canvas);
 
-        let expected_output: String = "P3
-5 3
-255
-0 0 0
-0 0 0
-0 0 0
-"
-        .to_string();
-
         // let expected_output: String = "P3
         // 5 3
         // 255
@@ -779,6 +766,8 @@ mod tests {
         // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
         // "
         //         .to_string();
+
+        let expected_output: String = "P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n0 0 0 0 128 0 0 0 0 0 0 0 0 0 0 \n".to_string();
 
         assert_eq!(ppm, expected_output);
     }
