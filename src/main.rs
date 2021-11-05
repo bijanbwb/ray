@@ -558,6 +558,37 @@ mod tests {
     }
 
     #[test]
+    fn test_environment_tick_repeated() {
+        let position: Tuple = Tuple::point(0.0, 1.0, 0.0);
+        let velocity: Tuple = Tuple::normalize(Tuple::vector(1.0, 1.0, 0.0));
+        let projectile: Projectile = Projectile::new(position, velocity);
+
+        let gravity: Tuple = Tuple::vector(0.0, -0.1, 0.0);
+        let wind: Tuple = Tuple::vector(-0.01, 0.0, 0.0);
+        let environment: Environment = Environment::new(gravity, wind);
+
+        let updated_projectile: Projectile = Environment::tick(environment, projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+        let updated_projectile: Projectile = Environment::tick(environment, updated_projectile);
+
+        assert!(updated_projectile.position.y <= 0.0);
+    }
+
+    #[test]
     fn test_color_constructor() {
         let color: Color = Color::new(-0.5, 0.4, 1.7);
 
