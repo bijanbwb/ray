@@ -146,6 +146,20 @@ impl Projectile {
     }
 }
 
+// ENVIRONMENT
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Environment {
+    gravity: Tuple,
+    wind: Tuple,
+}
+
+impl Environment {
+    fn new(gravity: Tuple, wind: Tuple) -> Self {
+        Environment { gravity, wind }
+    }
+}
+
 // COLOR
 
 #[derive(Clone, Copy, Debug)]
@@ -500,12 +514,22 @@ mod tests {
 
     #[test]
     fn test_projectile_constructor() {
-        let position: Tuple = Tuple::point(1.0, 2.0, 3.0);
-        let vector: Tuple = Tuple::vector(2.0, 3.0, 4.0);
+        let position: Tuple = Tuple::point(0.0, 1.0, 0.0);
+        let vector: Tuple = Tuple::normalize(Tuple::vector(1.0, 1.0, 0.0));
         let result: Projectile = Projectile::new(position, vector);
 
         assert_eq!(result.position, position);
         assert_eq!(result.vector, vector);
+    }
+
+    #[test]
+    fn test_environment_constructor() {
+        let gravity: Tuple = Tuple::vector(0.0, -0.1, 0.0);
+        let wind: Tuple = Tuple::vector(-0.01, 0.0, 0.0);
+        let result: Environment = Environment::new(gravity, wind);
+
+        assert_eq!(result.gravity, gravity);
+        assert_eq!(result.wind, wind);
     }
 
     #[test]
