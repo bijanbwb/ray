@@ -137,12 +137,12 @@ impl Div<f32> for Tuple {
 #[derive(Clone, Copy, Debug, PartialEq)]
 struct Projectile {
     position: Tuple,
-    vector: Tuple,
+    velocity: Tuple,
 }
 
 impl Projectile {
-    fn new(position: Tuple, vector: Tuple) -> Self {
-        Projectile { position, vector }
+    fn new(position: Tuple, velocity: Tuple) -> Self {
+        Projectile { position, velocity }
     }
 }
 
@@ -157,6 +157,13 @@ struct Environment {
 impl Environment {
     fn new(gravity: Tuple, wind: Tuple) -> Self {
         Environment { gravity, wind }
+    }
+
+    fn tick(environment: Environment, projectile: Projectile) -> Projectile {
+        Projectile {
+            position: projectile.position + projectile.velocity,
+            velocity: projectile.velocity + environment.gravity + environment.wind,
+        }
     }
 }
 
@@ -515,11 +522,11 @@ mod tests {
     #[test]
     fn test_projectile_constructor() {
         let position: Tuple = Tuple::point(0.0, 1.0, 0.0);
-        let vector: Tuple = Tuple::normalize(Tuple::vector(1.0, 1.0, 0.0));
-        let result: Projectile = Projectile::new(position, vector);
+        let velocity: Tuple = Tuple::normalize(Tuple::vector(1.0, 1.0, 0.0));
+        let result: Projectile = Projectile::new(position, velocity);
 
         assert_eq!(result.position, position);
-        assert_eq!(result.vector, vector);
+        assert_eq!(result.velocity, velocity);
     }
 
     #[test]
@@ -530,6 +537,24 @@ mod tests {
 
         assert_eq!(result.gravity, gravity);
         assert_eq!(result.wind, wind);
+    }
+
+    #[test]
+    fn test_environment_tick() {
+        let position: Tuple = Tuple::point(0.0, 1.0, 0.0);
+        let velocity: Tuple = Tuple::normalize(Tuple::vector(1.0, 1.0, 0.0));
+        let projectile: Projectile = Projectile::new(position, velocity);
+
+        let gravity: Tuple = Tuple::vector(0.0, -0.1, 0.0);
+        let wind: Tuple = Tuple::vector(-0.01, 0.0, 0.0);
+        let environment: Environment = Environment::new(gravity, wind);
+
+        let updated_projectile: Projectile = Environment::tick(environment, projectile);
+
+        assert_eq!(updated_projectile.position.x, 0.70710677);
+        assert_eq!(updated_projectile.position.y, 1.7071068);
+        assert_eq!(updated_projectile.velocity.x, 0.6971068);
+        assert_eq!(updated_projectile.velocity.y, 0.60710675);
     }
 
     #[test]
