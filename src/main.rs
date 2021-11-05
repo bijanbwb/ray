@@ -712,10 +712,10 @@ mod tests {
 
     #[test]
     fn test_canvas_constructor() {
-        let canvas: Canvas = Canvas::new(10, 20);
+        let canvas: Canvas = Canvas::new(255, 240);
 
-        assert_eq!(canvas.width, 10);
-        assert_eq!(canvas.height, 20);
+        assert_eq!(canvas.width, 255);
+        assert_eq!(canvas.height, 240);
 
         for pixel in canvas.pixels.iter().flatten() {
             assert_eq!(pixel.red, 0.0);
