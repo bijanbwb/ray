@@ -271,13 +271,13 @@ impl Canvas {
     fn pixel_at(canvas: Self, x: usize, y: usize) -> Color {
         let pixels: Vec<Vec<Color>> = canvas.pixels;
 
-        pixels[x][y]
+        pixels[y][x]
     }
 
     fn write_pixel(canvas: Self, x: usize, y: usize, color: Color) -> Canvas {
         let mut pixels: Vec<Vec<Color>> = canvas.pixels;
 
-        pixels[x][y] = color;
+        pixels[y][x] = color;
 
         Canvas {
             width: canvas.width,
@@ -289,20 +289,26 @@ impl Canvas {
     fn canvas_to_ppm(canvas: Self) -> String {
         let ppm_magic_number: String = "P3".to_string();
         let maximum_color_value: i32 = 255;
-        let mut pixels: String = "".to_string();
-
-        for row in canvas.pixels.iter() {
-            for color in row {
-                pixels.push_str(Color::to_string(&color).as_str());
-                pixels.push_str(" ");
-            }
-            pixels.push_str("\n");
-        }
+        let pixels: String = Self::pixels_to_string(canvas.pixels);
 
         format!(
             "{}\n{} {}\n{}\n{}",
             ppm_magic_number, canvas.width, canvas.height, maximum_color_value, pixels
         )
+    }
+
+    fn pixels_to_string(pixels: Vec<Vec<Color>>) -> String {
+        let mut rows: Vec<String> = vec![];
+        let mut colors: Vec<String> = vec![];
+
+        for row in pixels.iter() {
+            for color in row {
+                colors.push(Color::to_string(&color));
+            }
+            rows.push(colors.join(" "));
+        }
+
+        rows.join("\n")
     }
 
     fn write_ppm_to_file(ppm: String) {
@@ -752,22 +758,22 @@ mod tests {
 
         let color1: Color = Color::new(1.0, 0.0, 0.0);
         let color2: Color = Color::new(0.0, 0.5, 0.0);
+        let color3: Color = Color::new(0.0, 0.0, 1.0);
 
         canvas = Canvas::write_pixel(canvas, 0, 0, color1);
         canvas = Canvas::write_pixel(canvas, 2, 1, color2);
+        canvas = Canvas::write_pixel(canvas, 4, 2, color3);
 
         let ppm: String = Canvas::canvas_to_ppm(canvas);
 
-        // let expected_output: String = "P3
-        // 5 3
-        // 255
-        // 255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        // 0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
-        // 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-        // "
-        //         .to_string();
-
-        let expected_output: String = "P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n0 0 0 0 128 0 0 0 0 0 0 0 0 0 0 \n".to_string();
+        let expected_output: String = "P3
+5 3
+255
+255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 255
+"
+        .to_string();
 
         assert_eq!(ppm, expected_output);
     }
