@@ -309,6 +309,7 @@ impl Canvas {
         }
 
         rows.join("\n")
+        // TODO: Split lines at 70 characters?
     }
 
     fn write_ppm_to_file(ppm: String) {
@@ -780,7 +781,16 @@ mod tests {
 
     #[test]
     fn test_write_ppm_to_file() {
-        let canvas: Canvas = Canvas::new(256, 240);
+        let mut canvas: Canvas = Canvas::new(5, 3);
+
+        let color1: Color = Color::new(1.0, 0.0, 0.0);
+        let color2: Color = Color::new(0.0, 0.5, 0.0);
+        let color3: Color = Color::new(0.0, 0.0, 1.0);
+
+        canvas = Canvas::write_pixel(canvas, 0, 0, color1);
+        canvas = Canvas::write_pixel(canvas, 2, 1, color2);
+        canvas = Canvas::write_pixel(canvas, 4, 2, color3);
+
         let ppm: String = Canvas::canvas_to_ppm(canvas);
 
         Canvas::write_ppm_to_file(ppm);
