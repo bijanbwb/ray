@@ -324,6 +324,30 @@ impl Canvas {
     }
 }
 
+// MATRICES
+
+#[derive(Clone, Debug)]
+struct Matrix {
+    size: usize,
+    values: Vec<Vec<i32>>,
+}
+
+impl Matrix {
+    fn new() -> Self {
+        const MATRIX_SIZE: usize = 4;
+        let initial_value: i32 = 0;
+
+        Matrix {
+            size: MATRIX_SIZE,
+            values: vec![vec![initial_value; MATRIX_SIZE]; MATRIX_SIZE],
+        }
+    }
+
+    fn get(self: &Self, column: usize, row: usize) -> i32 {
+        self.values[column][row]
+    }
+}
+
 // TESTS
 
 #[cfg(test)]
@@ -843,6 +867,22 @@ mod tests {
 
         // Clean up
         fs::remove_file("./assets/canvas.ppm").expect("Failed to remove ppm file.");
+    }
+
+    #[test]
+    fn test_matrix_constructor() {
+        let matrix: Matrix = Matrix::new();
+
+        assert_eq!(matrix.values[0][0], 0);
+        assert_eq!(matrix.values[3][3], 0);
+    }
+
+    #[test]
+    fn test_matrix_get() {
+        let matrix: Matrix = Matrix::new();
+
+        assert_eq!(Matrix::get(&matrix, 0, 0), 0);
+        assert_eq!(Matrix::get(&matrix, 3, 3), 0);
     }
 
     // TEST HELPERS
