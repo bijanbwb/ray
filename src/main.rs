@@ -277,7 +277,14 @@ impl Canvas {
     fn write_pixel(canvas: Self, x: usize, y: usize, color: Color) -> Canvas {
         let mut pixels: Vec<Vec<Color>> = canvas.pixels;
 
-        pixels[y][x] = color;
+        // Only writes pixels that exist in the canvas.
+        match pixels.get(y) {
+            Some(colors) => match colors.get(x) {
+                Some(_color) => pixels[y][x] = color,
+                None => (),
+            },
+            None => (),
+        }
 
         Canvas {
             width: canvas.width,
@@ -790,6 +797,42 @@ mod tests {
         canvas = Canvas::write_pixel(canvas, 0, 0, color1);
         canvas = Canvas::write_pixel(canvas, 2, 1, color2);
         canvas = Canvas::write_pixel(canvas, 4, 2, color3);
+
+        let ppm: String = Canvas::canvas_to_ppm(canvas);
+
+        Canvas::write_ppm_to_file(ppm);
+
+        let file_exists: bool = Path::new("./assets/canvas.ppm").exists();
+        assert!(file_exists);
+
+        // Clean up
+        fs::remove_file("./assets/canvas.ppm").expect("Failed to remove ppm file.");
+    }
+
+    #[test]
+    fn test_write_projectile_ppm_to_file() {
+        let canvas_width: usize = 900;
+        let canvas_height: usize = 550;
+        let mut canvas: Canvas = Canvas::new(canvas_width, canvas_height);
+
+        let starting_position: Tuple = Tuple::point(0.0, 1.0, 0.0);
+        let velocity: Tuple = Tuple::normalize(Tuple::vector(1.0, 1.8, 0.0)) * 11.25;
+        let mut projectile: Projectile = Projectile::new(starting_position, velocity);
+
+        let gravity: Tuple = Tuple::vector(0.0, -0.1, 0.0);
+        let wind: Tuple = Tuple::vector(-0.01, 0.0, 0.0);
+        let environment: Environment = Environment::new(gravity, wind);
+        let color: Color = Color::new(0.5, 0.0, 0.5);
+
+        while projectile.position.y > 0.0 {
+            projectile = Environment::tick(environment, projectile);
+            canvas = Canvas::write_pixel(
+                canvas,
+                projectile.position.x as usize,
+                canvas_height - (projectile.position.y as usize),
+                color,
+            );
+        }
 
         let ppm: String = Canvas::canvas_to_ppm(canvas);
 
