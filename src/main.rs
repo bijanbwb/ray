@@ -292,16 +292,16 @@ impl Canvas {
         let pixels: String = Self::pixels_to_string(canvas.pixels);
 
         format!(
-            "{}\n{} {}\n{}\n{}",
+            "{}\n{} {}\n{}\n{}\n",
             ppm_magic_number, canvas.width, canvas.height, maximum_color_value, pixels
         )
     }
 
     fn pixels_to_string(pixels: Vec<Vec<Color>>) -> String {
         let mut rows: Vec<String> = vec![];
-        let mut colors: Vec<String> = vec![];
 
         for row in pixels.iter() {
+            let mut colors: Vec<String> = vec![];
             for color in row {
                 colors.push(Color::to_string(&color));
             }
